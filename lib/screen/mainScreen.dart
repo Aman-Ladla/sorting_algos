@@ -22,6 +22,7 @@ class _MainScreenState extends State<MainScreen> {
   var chosenAlgo;
   List<int> a = [];
   bool endflag = false;
+  int highest = 0;
 
   //Algorithms
 
@@ -302,9 +303,12 @@ sub-array of arr to be sorted */
       arr.clear();
       tbp.clear();
       for (int i = 0; i < density; i++) {
-        int x = random.nextInt(290) + 20;
+        int x = random.nextInt(280) + 20;
         arr.add(x);
         tbp.add(x);
+        if (highest < x) {
+          highest = x;
+        }
       }
     });
   }
@@ -427,7 +431,7 @@ sub-array of arr to be sorted */
                         width: double.maxFinite,
                         color: Color(0xffeeeeee),
                         child: PaintingWdt(tbp, (17 / density) * 15, left,
-                            right, selectedAlgo, endflag),
+                            right, selectedAlgo, endflag, highest),
                       ),
                     ),
                     Padding(

@@ -1,6 +1,4 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:sorting_algos/screen/mainScreen.dart';
 
 Paint _paint;
 List<List<int>> temp = [];
@@ -11,15 +9,17 @@ int leftp;
 int rightp;
 String algo;
 bool end;
+int max;
 
 class PaintingWdt extends StatefulWidget {
-  PaintingWdt(List<int> x, double x1, int l, int r, String a, bool e) {
+  PaintingWdt(List<int> x, double x1, int l, int r, String a, bool e, int h) {
     arr = x;
     width = x1;
     leftp = l;
     rightp = r;
     algo = a;
     end = e;
+    max = h;
   }
 
   @override
@@ -47,6 +47,7 @@ class Painter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     double a = 0.0;
+    double b = 0.0;
     for (int i = 0; i < arr.length; i++) {
       if (algo == 'Merge Sort' || algo == 'Bubble Sort') {
         if (i >= leftp && i <= rightp) {
@@ -66,8 +67,24 @@ class Painter extends CustomPainter {
         }
       }
       canvas.drawRect(
-          Rect.fromLTWH(a += width + 5, 40.0, width, arr[i].toDouble()),
+          Rect.fromLTWH(
+              a += width + 5, 60.0, width, (arr[i].toDouble()) / max * 280),
           _paint);
+      final textStyle = TextStyle(
+        color: Colors.black,
+      );
+      final textSpan = TextSpan(
+        text: arr[i].toString(),
+        style: textStyle,
+      );
+      final textPainter = TextPainter(
+          text: textSpan,
+          textDirection: TextDirection.ltr,
+          textAlign: TextAlign.center,
+          maxLines: 3);
+      final offset = Offset(b += width + 5, 10);
+      textPainter.layout(minWidth: width, maxWidth: width);
+      textPainter.paint(canvas, offset);
     }
     print('hello 0');
     print('paint method called abcd');
