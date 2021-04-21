@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:sorting_algos/painter.dart';
+import 'package:sorting_algos/screen/generate.dart';
+import 'generate.dart';
 
 bool flag = false;
 List<int> tbp = [];
@@ -44,11 +46,6 @@ class _MainScreenState extends State<MainScreen> {
             print('set state called');
             left = j - 1;
             right = j;
-            // a.clear();
-            // for (int i = 0; i < arr.length; i++) {
-            //   a.add(arr[i]);
-            // }
-            // tbp = a;
             tbp = List.from(arr);
           });
         });
@@ -73,26 +70,19 @@ class _MainScreenState extends State<MainScreen> {
     int n1 = m - l + 1;
     int n2 = r - m;
 
-    /* create temp arrays */
     List<int> L = [];
     List<int> R = [];
 
-    /* Copy data to temp arrays L[] and R[] */
     for (i = 0; i < n1; i++) {
-      // L[i] = arr[l + i];
-
       L.add(arr[l + i]);
     }
     for (j = 0; j < n2; j++) {
-      // R[j] = arr[m + 1 + j];
-
       R.add(arr[m + 1 + j]);
     }
 
-    /* Merge the temp arrays back into arr[l..r]*/
-    i = 0; // Initial index of first subarray
-    j = 0; // Initial index of second subarray
-    k = l; // Initial index of merged subarray
+    i = 0;
+    j = 0;
+    k = l;
     while (i < n1 && j < n2) {
       if (L[i] <= R[j]) {
         arr[k] = L[i];
@@ -127,24 +117,17 @@ class _MainScreenState extends State<MainScreen> {
     return arr;
   }
 
-/* l is for left index and r is right index of the
-sub-array of arr to be sorted */
   Future<List<int>> mergeSort(List<int> arr, int l, int r) async {
     List<int> a = [];
     a.clear();
     if (l < r) {
-      // Same as (l+r)/2, but avoids overflow for
-      // large l and h
       int m = (l + (r - l) / 2).floor();
 
-      // Sort first and second halves
       arr = await mergeSort(arr, l, m);
-      //print('hello guys0 $arr');
+
       arr = await mergeSort(arr, m + 1, r);
-      //print('hello guys1 $arr');
 
       arr = await merge(arr, l, m, r);
-      //print('hello guys2 $arr');
     }
     return arr;
   }
@@ -237,24 +220,19 @@ sub-array of arr to be sorted */
     }
   }
 
-  // To heapify a subtree rooted with node i which is
-  // an index in arr[]. n is size of heap
   Future<List<int>> heapify(List<int> arr, int n, int i) async {
-    int largest = i; // Initialize largest as root
-    int l = 2 * i + 1; // left = 2*i + 1
-    int r = 2 * i + 2; // right = 2*i + 2
+    int largest = i;
+    int l = 2 * i + 1;
+    int r = 2 * i + 2;
 
-    // If left child is larger than root
     if (l < n && arr[l] > arr[largest]) {
       largest = l;
     }
 
-    // If right child is larger than largest so far
     if (r < n && arr[r] > arr[largest]) {
       largest = r;
     }
 
-    // If largest is not root
     if (largest != i) {
       int swap = arr[i];
       arr[i] = arr[largest];
@@ -268,7 +246,6 @@ sub-array of arr to be sorted */
         });
       });
 
-      // Recursively heapify the affected sub-tree
       arr = await heapify(arr, n, largest);
     }
     return arr;
@@ -294,6 +271,7 @@ sub-array of arr to be sorted */
   }
 
   void generateArray() {
+    highest = 0;
     var random = Random();
     setState(() {
       endflag = false;
@@ -379,7 +357,7 @@ sub-array of arr to be sorted */
                   ),
                   child: Slider(
                     value: density.toDouble(),
-                    min: 4.0,
+                    min: 3.0,
                     max: 17.0,
                     onChanged: butEnabled
                         ? (double newValue) {
@@ -397,7 +375,7 @@ sub-array of arr to be sorted */
               height: 30.0,
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Material(
                   color: butEnabled ? Colors.white70 : Colors.white10,
@@ -409,7 +387,49 @@ sub-array of arr to be sorted */
                           }
                         : null,
                     child: Text(
-                      'Create New Array',
+                      'Random Array',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                ),
+                Material(
+                  color: butEnabled ? Colors.white70 : Colors.white10,
+                  borderRadius: BorderRadius.circular(20.0),
+                  child: MaterialButton(
+                    onPressed: butEnabled
+                        ? () async {
+                            String a = await showModalBottomSheet(
+                                context: context,
+                                builder: (context) => AddScreen());
+
+                            List<int> temp = [];
+                            temp.clear();
+                            int high = 0;
+                            int x = 0;
+                            while (x < a.length) {
+                              String z = '';
+                              while (x != a.length && a[x] != ',') {
+                                z += a[x];
+                                x++;
+                              }
+                              double t = double.parse(z);
+                              temp.add(t.round());
+                              if (high < t.round()) {
+                                high = t.round();
+                              }
+                              x++;
+                            }
+                            setState(() {
+                              density = temp.length;
+                              arr = List.of(temp);
+                              tbp = List.of(temp);
+                              highest = high;
+                            });
+                            print(temp);
+                          }
+                        : null,
+                    child: Text(
+                      'Create Array',
                       style: TextStyle(color: Colors.black),
                     ),
                   ),
