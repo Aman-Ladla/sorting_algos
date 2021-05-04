@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 String text;
+
+final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
 class AddScreen extends StatelessWidget {
   @override
@@ -32,46 +35,56 @@ class AddScreen extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40.0),
-              child: TextField(
-                keyboardType: TextInputType.number,
-                style: TextStyle(
-                  color: Colors.black,
+              child: Form(
+                key: _formKey,
+                child: TextFormField(
+                  keyboardType: TextInputType.number,
+                  style: TextStyle(
+                    color: Colors.black,
+                  ),
+                  decoration: InputDecoration(
+                    hintText: 'Eg: 12,45,31,22',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(32.0),
+                          topRight: Radius.zero,
+                          bottomRight: Radius.circular(32.0),
+                          bottomLeft: Radius.zero),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Colors.lightBlueAccent, width: 1.0),
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(32.0),
+                          topRight: Radius.zero,
+                          bottomRight: Radius.circular(32.0),
+                          bottomLeft: Radius.zero),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Colors.lightBlueAccent, width: 2.0),
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(32.0),
+                          topRight: Radius.zero,
+                          bottomRight: Radius.circular(32.0),
+                          bottomLeft: Radius.zero),
+                    ),
+                    hintStyle: TextStyle(
+                      color: Colors.black54,
+                    ),
+                  ),
+                  validator: (String value) {
+                    if (value.isEmpty) {
+                      return 'Input cant be empty';
+                    }
+
+                    return null;
+                  },
+                  autofocus: true,
+                  onChanged: (value) {
+                    text = value;
+                  },
                 ),
-                decoration: InputDecoration(
-                  hintText: 'Eg: 12,45,31,22',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(32.0),
-                        topRight: Radius.zero,
-                        bottomRight: Radius.circular(32.0),
-                        bottomLeft: Radius.zero),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Colors.lightBlueAccent, width: 1.0),
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(32.0),
-                        topRight: Radius.zero,
-                        bottomRight: Radius.circular(32.0),
-                        bottomLeft: Radius.zero),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Colors.lightBlueAccent, width: 2.0),
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(32.0),
-                        topRight: Radius.zero,
-                        bottomRight: Radius.circular(32.0),
-                        bottomLeft: Radius.zero),
-                  ),
-                  hintStyle: TextStyle(
-                    color: Colors.black54,
-                  ),
-                ),
-                autofocus: true,
-                onChanged: (value) {
-                  text = value;
-                },
               ),
             ),
             Flexible(
@@ -83,8 +96,52 @@ class AddScreen extends StatelessWidget {
               color: Colors.lightBlueAccent,
               child: MaterialButton(
                 onPressed: () {
-                  //Provider.of<TaskData>(context, listen: false).addTask(text);
-                  Navigator.pop(context, text);
+                  List<int> temp = [];
+                  temp.clear();
+                  int high = 0;
+                  int x = 0;
+                  try {
+                    while (x < text.length) {
+                      String z = '';
+                      while (x != text.length && text[x] != ',') {
+                        z += text[x];
+                        x++;
+                      }
+                      double t = double.parse(z);
+                      temp.add(t.round());
+                      if (high < t.round()) {
+                        high = t.round();
+                      }
+                      x++;
+                    }
+
+                    if (temp.length >= 3 && temp.length <= 17) {
+                      _formKey.currentState.save();
+                      Navigator.pop(context, temp);
+                    } else {
+                      Fluttertoast.showToast(
+                          msg:
+                              "Elements must be greater than 2 and less than 18",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Colors.black54,
+                          textColor: Colors.white,
+                          fontSize: 16.0);
+                    }
+                  } catch (e) {
+                    Fluttertoast.showToast(
+                        msg: "Input Elements are invalid",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.black54,
+                        textColor: Colors.white,
+                        fontSize: 16.0);
+                  }
+                  if (!_formKey.currentState.validate()) {
+                    return;
+                  }
                 },
                 child: Text(
                   'Add',

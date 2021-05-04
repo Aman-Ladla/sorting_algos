@@ -398,27 +398,38 @@ class _MainScreenState extends State<MainScreen> {
                   child: MaterialButton(
                     onPressed: butEnabled
                         ? () async {
-                            String a = await showModalBottomSheet(
+                            sortButEnabled = true;
+                            endflag = false;
+                            left = -2;
+                            right = -1;
+                            List<int> temp = await showModalBottomSheet(
                                 context: context,
                                 builder: (context) => AddScreen());
 
-                            List<int> temp = [];
-                            temp.clear();
+                            // List<int> temp = [];
+                            // temp.clear();
+                            // int high = 0;
+                            // int x = 0;
+                            // while (x < a.length) {
+                            //   String z = '';
+                            //   while (x != a.length && a[x] != ',') {
+                            //     z += a[x];
+                            //     x++;
+                            //   }
+                            //   double t = double.parse(z);
+                            //   temp.add(t.round());
+                            //   if (high < t.round()) {
+                            //     high = t.round();
+                            //   }
+                            //   x++;
+                            // }
                             int high = 0;
-                            int x = 0;
-                            while (x < a.length) {
-                              String z = '';
-                              while (x != a.length && a[x] != ',') {
-                                z += a[x];
-                                x++;
+                            for (int i = 0; i < temp.length; i++) {
+                              if (high < temp[i]) {
+                                high = temp[i];
                               }
-                              double t = double.parse(z);
-                              temp.add(t.round());
-                              if (high < t.round()) {
-                                high = t.round();
-                              }
-                              x++;
                             }
+
                             setState(() {
                               density = temp.length;
                               arr = List.of(temp);
@@ -487,6 +498,7 @@ class _MainScreenState extends State<MainScreen> {
                                           endflag = true;
                                           tbp = List.from(arr);
                                         });
+                                        //endflag = false;
                                       });
                                       break;
                                     case 'Heap Sort':
@@ -501,6 +513,7 @@ class _MainScreenState extends State<MainScreen> {
                                           endflag = true;
                                           tbp = List.from(arr);
                                         });
+                                        //endflag = false;
                                       });
                                       break;
                                   }

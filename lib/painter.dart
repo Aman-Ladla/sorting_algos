@@ -66,7 +66,6 @@ class Painter extends CustomPainter {
           _paint = Paint()..color = Colors.blue;
         }
       }
-      print(arr[i].toDouble() / max * 280);
       canvas.drawRect(
           Rect.fromLTWH(
               a += width + 5, 60.0, width, ((arr[i].toDouble()) / max) * 280),
